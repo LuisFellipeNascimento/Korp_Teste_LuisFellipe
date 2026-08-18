@@ -1,0 +1,53 @@
+<section class="home-page">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Bem-vindo</h1>
+      <p>Gerencie seus produtos e notas fiscais de forma eficiente</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Produtos Disponíveis</h2>
+        <p>Total de {{ produtos.length }} produto(s) cadastrado(s)</p>
+      </div>
+      <a routerLink="/produtos" class="btn-add">+ Adicionar Produto</a>
+    </div>
+
+    <div *ngIf="carregando" class="loading">
+      <div class="spinner"></div>
+      <p>Carregando produtos...</p>
+    </div>
+
+    <div *ngIf="erro" class="error-banner">
+      {{ erro }}
+    </div>
+
+    <div *ngIf="!carregando && produtos.length === 0" class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5m-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11m3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"></path>
+      </svg>
+      <h3>Nenhum produto cadastrado</h3>
+      <p>Comece <a routerLink="/produtos">criando um novo produto</a></p>
+    </div>
+
+    <div *ngIf="!carregando && produtos.length > 0" class="products-grid">
+      <div *ngFor="let produto of produtos" class="product-card">
+        <div class="card-header">
+          <span class="code-badge">{{ produto.codigo }}</span>
+        </div>
+        <div class="card-content">
+          <h3>{{ produto.descricao }}</h3>
+          <div class="stock-info">
+            <span class="label">Saldo:</span>
+            <span class="value">{{ produto.saldo }} unidade(s)</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a routerLink="/produtos" class="link-btn">Gerenciar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,1 @@
+export { ProdutoService } from './produto';

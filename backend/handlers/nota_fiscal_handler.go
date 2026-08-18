@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
-	"Emissao_de_notas_fiscais/backend/database"
 	"Emissao_de_notas_fiscais/backend/models"
+	"Emissao_de_notas_fiscais/database"
 
 	"github.com/gin-gonic/gin"
 )

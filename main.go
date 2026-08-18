@@ -1,8 +1,10 @@
 package main
 
 import (
-	"Emissao_de_notas_fiscais/backend/database"
 	"Emissao_de_notas_fiscais/backend/handlers"
+	"Emissao_de_notas_fiscais/database"
+	"os"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -36,5 +38,10 @@ func main() {
 		notas.POST("/:id/imprimir", handlers.ImprimirNota)
 	}
 
-	r.Run(":8080") // http://localhost:8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081"
+	}
+
+	r.Run(":" + port)
 }

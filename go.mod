@@ -1,4 +1,4 @@
-module nome-do-seu-projeto
+module Emissao_de_notas_fiscais
 
 go 1.25.1
 
