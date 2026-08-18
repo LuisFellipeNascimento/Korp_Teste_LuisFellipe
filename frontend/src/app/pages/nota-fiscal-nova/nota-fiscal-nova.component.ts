@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProdutoService } from '../../services/produto.service';
+import { NotaFiscalService } from '../../services/nota-fiscal.service';
 import { jsPDF } from 'jspdf';
 import { Produto, ItemNota, NotaFiscal } from '../../models/models';
 

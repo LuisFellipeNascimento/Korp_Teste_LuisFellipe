@@ -1,11 +1,14 @@
 <section class="nota-fiscal-page">
   <div class="header-row">
-    <div>
-      <p class="eyebrow">Notas fiscais</p>
-      <h2>Nova Nota Fiscal</h2>
+    <div  class="card">
+    
+      <h2>Criar Nota Fiscal</h2>
     </div>
     <button class="secondary-btn" type="button" (click)="voltarParaNotas()">
       Ver notas
+    </button>
+    <button class="secondary-btn" type="button" (click)="carregarProdutos()">
+      Pagina Inicial
     </button>
   </div>
 
@@ -63,7 +66,7 @@
       <button class="primary-btn" type="button" (click)="salvarNota()" [disabled]="salvando">
         {{ salvando ? 'Salvando...' : 'Salvar Nota (status: Aberta)' }}
       </button>
-      <button class="secondary-btn" type="button" (click)="gerarPDF()" [disabled]="processandoImpressaoId">{{ processandoImpressaoId ? 'Processando...' : 'Gerar PDF' }}</button>
+      <button class="primary-btn" type="button" (click)="gerarPDF()" [disabled]="processandoImpressaoId">{{ processandoImpressaoId ? 'Processando...' : 'Gerar PDF' }}</button>
     </div>
   </div>
 
