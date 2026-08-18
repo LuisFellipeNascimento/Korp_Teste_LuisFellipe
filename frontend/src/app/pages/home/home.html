@@ -12,7 +12,10 @@
         <h2>Produtos Disponíveis</h2>
         <p>Total de {{ produtos.length }} produto(s) cadastrado(s)</p>
       </div>
-      <a routerLink="/produtos" class="btn-add">+ Adicionar Produto</a>
+      <div class="actions-group">
+        <a routerLink="/notas-fiscais/nova" class="btn-add">+ Criar Nota Fiscal</a>
+        <a routerLink="/produtos" class="btn-add">+ Adicionar Produto</a>
+      </div>
     </div>
 
     <div *ngIf="carregando" class="loading">

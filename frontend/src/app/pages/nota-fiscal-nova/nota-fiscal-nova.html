@@ -1,1 +1,109 @@
-<p>nota-fiscal-nova works!</p>
+<section class="nota-fiscal-page">
+  <div class="header-row">
+    <div>
+      <p class="eyebrow">Notas fiscais</p>
+      <h2>Nova Nota Fiscal</h2>
+    </div>
+    <button class="secondary-btn" type="button" (click)="voltarParaNotas()">
+      Ver notas
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="form-grid">
+      <label>
+        <span>Produto cadastrado</span>
+        <select [(ngModel)]="produtoSelecionadoId">
+          <option [ngValue]="null">Selecione um produto</option>
+          <option *ngFor="let p of produtos" [ngValue]="p.id">
+            {{ p.codigo }} - {{ p.descricao }} (saldo: {{ p.saldo }})
+          </option>
+        </select>
+      </label>
+
+      <label>
+        <span>Quantidade</span>
+        <input type="number" min="1" [(ngModel)]="quantidadeSelecionada" />
+      </label>
+    </div>
+
+    <div class="actions-row">
+      <button class="primary-btn" type="button" (click)="adicionarItem()">
+        + Adicionar produto
+      </button>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="itens.length > 0 || erro || sucesso">
+    <h3>Produtos da nota</h3>
+
+    <p class="erro" *ngIf="erro">{{ erro }}</p>
+    <p class="sucesso" *ngIf="sucesso">{{ sucesso }}</p>
+
+    <table class="itens-table" *ngIf="itens.length > 0">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of itens; let i = index">
+          <td>{{ nomeProduto(item.produto_id) }}</td>
+          <td>{{ item.quantidade }}</td>
+          <td>
+            <button class="danger-btn" type="button" (click)="removerItem(i)">Remover</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="save-row" *ngIf="itens.length > 0">
+      <button class="primary-btn" type="button" (click)="salvarNota()" [disabled]="salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar Nota (status: Aberta)' }}
+      </button>
+      <button class="secondary-btn" type="button" (click)="gerarPDF()" [disabled]="processandoImpressaoId">{{ processandoImpressaoId ? 'Processando...' : 'Gerar PDF' }}</button>
+    </div>
+  </div>
+
+  <div class="card notas-list">
+    <div class="section-title-row">
+      <h3>Notas cadastradas</h3>
+    </div>
+
+    <div *ngIf="notas.length === 0" class="empty-state">
+      Nenhuma nota fiscal cadastrada ainda.
+    </div>
+
+    <div *ngIf="notas.length > 0" class="nota-list">
+      <div class="nota-item" *ngFor="let nota of notas">
+        <div class="nota-main">
+          <div>
+            <strong>Nota nº {{ nota.numero }}</strong>
+            <span class="status status-{{ nota.status | lowercase }}">{{ nota.status }}</span>
+          </div>
+        </div>
+
+        <div class="nota-itens" *ngIf="nota.itens?.length">
+          <ul>
+            <li *ngFor="let item of nota.itens">
+              {{ item.codigo }} - {{ item.descricao }} · {{ item.quantidade }} unidade(s)
+            </li>
+          </ul>
+        </div>
+
+        <div class="nota-actions">
+          <button
+            class="primary-btn"
+            type="button"
+            (click)="imprimirNota(nota)"
+            [disabled]="nota.status !== 'Aberta' || processandoImpressaoId === nota.id"
+          >
+            {{ processandoImpressaoId === nota.id ? 'Processando...' : 'Imprimir' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

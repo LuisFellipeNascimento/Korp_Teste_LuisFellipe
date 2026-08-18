@@ -7,15 +7,8 @@
 -- Versão do servidor: 8.4.7
 -- Versão do PHP: 8.5.0
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Banco de dados: `notas_fiscais_db`
@@ -71,8 +64,21 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `codigo` (`codigo`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- --------------------------------------------------------
+
+--
+-- Dados para a tabela `produtos`
+--
+
+INSERT INTO produtos (codigo, descricao, saldo) VALUES 
+('P-001', 'Teclado Mecânico RGB', 15),
+('P-002', 'Mouse Gamer Wireless', 28),
+('P-003', 'Monitor 27" 144Hz', 8),
+('P-004', 'Headset Profissional', 12),
+('P-005', 'Mousepad Grande', 45),
+('P-006', 'Webcam 1080P', 20),
+('P-007', 'Hub USB 3.0 7 Portas', 18),
+('P-008', 'Suporte Para Monitor', 35);
+
+COMMIT;

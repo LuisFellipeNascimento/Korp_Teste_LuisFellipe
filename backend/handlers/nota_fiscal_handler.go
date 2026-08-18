@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
 
 	"Emissao_de_notas_fiscais/backend/models"
 	"Emissao_de_notas_fiscais/database"
@@ -183,7 +184,7 @@ func ImprimirNota(c *gin.Context) {
 		}
 		if saldoAtual < it.quantidade {
 			tx.Rollback()
-			c.JSON(http.StatusBadRequest, gin.H{"erro": "Saldo insuficiente para o produto ID " + string(rune(it.produtoID))})
+			c.JSON(http.StatusBadRequest, gin.H{"erro": "Saldo insuficiente para o produto ID " + strconv.Itoa(it.produtoID)})
 			return
 		}
 	}
