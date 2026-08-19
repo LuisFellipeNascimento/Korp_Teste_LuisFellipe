@@ -3,14 +3,6 @@
 Este repositório contém um sistema completo com frontend em Angular e backend em Go.
 O objetivo é fornecer um guia simples e direto para configurar e rodar o projeto localmente.
 
-📂 Estrutura do Projeto
-Código
-├── frontend/        # Aplicação Angular (interface do usuário)
-├── main.go          # Arquivo principal da aplicação Go (backend)
-├── go.mod           # Configurações e dependências do Go
-├── package.json     # Configurações e dependências globais
-└── README.md        # Documentação do projeto
-
 ⚙️ Pré-requisitos
 Antes de começar, certifique-se de ter instalado:
 
@@ -39,6 +31,7 @@ Instale as dependências do frontend:
 bash
 cd frontend
 npm install
+
 ▶️ Como rodar o projeto
 🔹 Rodando apenas o frontend
 Dentro da pasta frontend:
@@ -54,7 +47,7 @@ bash
 go run main.go
 O servidor backend estará disponível em: http://localhost:8080
 
-🔹 Rodando o sistema completo
+🔹 **Rodando o sistema completo**
 Na raiz do projeto, inicie o backend:
 
 bash
