@@ -1,54 +1,74 @@
-<section class="produtos-page">
-  <div class="page-header">
-    <div>
-     
-      <h2>Produtos</h2>
+<section class="home-page">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Produtos</h1>
+      <p>Gerencie seu estoque de produtos de forma eficiente</p>
     </div>
-    <span class="badge">{{ produtos.length }} itens</span>
   </div>
 
-  <div class="card form-card">
-    <div class="card-title">
-      <h3>{{ editandoId !== null ? 'Editar produto' : 'Cadastrar produto' }}</h3>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>{{ editandoId !== null ? 'Editar produto' : 'Cadastrar produto' }}</h2>
+        <p>{{ produtos.length }} produto(s) cadastrado(s)</p>
+      </div>
+      <div class="actions-group">
+        <a routerLink="/notas-fiscais/nova" class="btn-add">+ Criar Nota Fiscal</a>
+        <a routerLink="/" class="btn-add">Página Inicial</a>
+      </div>
     </div>
 
-    <div class="form-grid">
-      <label class="field">
-        <span>Código</span>
-        <input type="text" placeholder="Ex: P-001" [(ngModel)]="novoProduto.codigo" />
-      </label>
-
-      <label class="field">
-        <span>Descrição</span>
-        <input type="text" placeholder="Ex: Teclado mecânico" [(ngModel)]="novoProduto.descricao" />
-      </label>
-
-      <label class="field">
-        <span>Saldo</span>
-        <input type="number" min="0" placeholder="0" [(ngModel)]="novoProduto.saldo" />
-      </label>
+    <div *ngIf="erro" class="error-banner">
+      {{ erro }}
     </div>
 
-    <div class="actions">
-      <button type="button" class="primary" (click)="salvar()">
-        {{ editandoId !== null ? 'Atualizar' : 'Salvar' }}
-      </button>
+    <div class="card">
+      <div class="form-grid">
+        <label>
+          <span>Código</span>
+          <input type="text" placeholder="Ex: P-001" [(ngModel)]="novoProduto.codigo" />
+        </label>
 
-      <button type="button" class="secondary" *ngIf="editandoId !== null" (click)="cancelarEdicao()">
-        Cancelar
-      </button>
+        <label>
+          <span>Descrição</span>
+          <input type="text" placeholder="Ex: Teclado mecânico" [(ngModel)]="novoProduto.descricao" />
+        </label>
+
+        <label>
+          <span>Saldo</span>
+          <input type="number" min="0" placeholder="0" [(ngModel)]="novoProduto.saldo" />
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="primary-btn" type="button" (click)="salvar()">
+          {{ editandoId !== null ? 'Atualizar' : 'Salvar' }}
+        </button>
+        <button class="secondary-btn" *ngIf="editandoId !== null" type="button" (click)="cancelarEdicao()">
+          Cancelar
+        </button>
+      </div>
     </div>
 
-    <p class="erro" *ngIf="erro">{{ erro }}</p>
-  </div>
+    <div class="card table-card">
+      <div class="section-title-row">
+        <h3>Lista de produtos</h3>
+      </div>
 
-  <div class="card table-card">
-    <div class="table-header">
-      <h3>Lista de produtos</h3>
-    </div>
+      <div *ngIf="carregando" class="empty-state">
+        <div class="spinner"></div>
+        <p>Carregando produtos...</p>
+      </div>
 
-    <div class="table-wrap">
-      <table>
+      <div *ngIf="!carregando && produtos.length === 0" class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5m-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11m3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"></path>
+        </svg>
+        <h3>Nenhum produto cadastrado</h3>
+        <p>Comece <a routerLink="/produtos">criando um novo produto</a></p>
+      </div>
+
+      <table class="itens-table" *ngIf="!carregando && produtos.length > 0">
         <thead>
           <tr>
             <th>Código</th>
@@ -58,26 +78,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="carregando">
-            <td colspan="4" style="text-align: center; padding: 32px;">
-              <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; border: 4px solid rgba(59, 130, 246, 0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-                <span>Carregando produtos...</span>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="!carregando && produtos.length === 0">
-            <td colspan="4" style="text-align: center; padding: 24px;">Nenhum produto cadastrado</td>
-          </tr>
           <tr *ngFor="let p of produtos">
             <td>{{ p.codigo }}</td>
             <td>{{ p.descricao }}</td>
             <td>{{ p.saldo }}</td>
-            <td>
-              <div class="action-group">
-                <button type="button" class="ghost" (click)="editar(p)">Editar</button>
-                <button type="button" class="danger" (click)="excluir(p.id)">Excluir</button>
-              </div>
+            <td colspan="2">
+              
+                <button class="secondary-btn" type="button" (click)="editar(p)">Editar</button>
+                <button class="danger-btn" type="button" (click)="excluir(p.id)">Excluir</button>
+              
             </td>
           </tr>
         </tbody>

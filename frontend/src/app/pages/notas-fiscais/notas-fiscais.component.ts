@@ -1,13 +1,13 @@
 import { Component, afterNextRender, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NotaFiscalService } from '../../services/nota-fiscal.service';
 import { NotaFiscal } from '../../models/models';
 
 @Component({
   selector: 'app-notas-fiscais',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './notas-fiscais.html',
   styleUrl: './notas-fiscais.css',
 })

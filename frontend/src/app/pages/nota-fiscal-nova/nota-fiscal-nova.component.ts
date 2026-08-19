@@ -1,7 +1,7 @@
 import { Component, afterNextRender, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProdutoService } from '../../services/produto.service';
 import { NotaFiscalService } from '../../services/nota-fiscal.service';
 import { jsPDF } from 'jspdf';
@@ -10,7 +10,7 @@ import { Produto, ItemNota, NotaFiscal } from '../../models/models';
 @Component({
   selector: 'app-nota-fiscal-nova',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './nota-fiscal-nova.html',
   styleUrl: './nota-fiscal-nova.css',
 })
@@ -125,81 +125,252 @@ export class NotaFiscalNovaComponent {
         format: 'a4',
       });
 
-      const margin = 15;
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 10;
       let y = margin;
 
-      const tableWidth = pageWidth - 2 * margin;
-      const col1Width = tableWidth * 0.55;
-      const col2Width = tableWidth * 0.2;
-      const col3Width = tableWidth * 0.25;
+      // ===== CABEÇALHO NFE =====
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, 0, pageWidth, 22, 'F');
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.5);
+      doc.rect(0, 0, pageWidth, 22, 'D');
 
-      // Título
-      doc.setFontSize(18);
+      doc.setFontSize(14);
       doc.setTextColor(0, 0, 0);
-      doc.text('NOTA FISCAL', pageWidth / 2, y, { align: 'center' });
-      y += 12;
+      doc.setFont('helvetica', 'bold');
+      doc.text('NOTA FISCAL', margin, 12);
 
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 100, 100);
+      doc.text('Nota Fiscal Eletrônica', margin, 18);
+
+      // Número da nota e série
+      const notaNumero = this.notas.length > 0 ? this.notas[this.notas.length - 1].numero + 1 : 1;
       doc.setFontSize(10);
-      doc.text(`Número: ${new Date().toLocaleDateString()}`, pageWidth / 2, y, { align: 'center' });
-      y += 12;
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Nº ${notaNumero.toString().padStart(3, '0')}`, pageWidth - margin, 10, { align: 'right' });
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Série: 1', pageWidth - margin, 16, { align: 'right' });
 
-      doc.text(`Data de emissão: ${new Date().toLocaleString()}`, pageWidth / 2, y, { align: 'center' });
-      y += 20;
+      y = 26;
+
+      // ===== EMISSOR E DESTINATÁRIO =====
+      const colWidth = (pageWidth - 2 * margin) / 2;
+
+      // Emissor
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(margin, y, colWidth, 38, 'D');
+      doc.setFontSize(7);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text('EMISSOR', margin + 3, y + 5);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6);
+      doc.text('Razão Social: Sistema de Emissão de Notas Fiscais Ltda', margin + 3, y + 9);
+      doc.text('CNPJ: 12.345.678/0001-90', margin + 3, y + 13);
+      doc.text('Endereço: Rua das Notas, 123 - Centro', margin + 3, y + 17);
+      doc.text('Cidade: São Paulo - SP', margin + 3, y + 21);
+      doc.text('CEP: 01000-000', margin + 3, y + 25);
+      doc.text('Telefone: (11) 3000-0000', margin + 3, y + 29);
+      doc.text('Email: contato@notafiscal.com', margin + 3, y + 33);
+
+      // Destinatário
+      doc.rect(margin + colWidth, y, colWidth, 38, 'D');
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DESTINATÁRIO', margin + colWidth + 3, y + 5);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6);
+      doc.text('Razão Social: Cliente Exemplo Ltda', margin + colWidth + 3, y + 9);
+      doc.text('CNPJ/CPF: 98.765.432/0001-10', margin + colWidth + 3, y + 13);
+      doc.text('Endereço: Av. do Cliente, 456 - Bairro', margin + colWidth + 3, y + 17);
+      doc.text('Cidade: Rio de Janeiro - RJ', margin + colWidth + 3, y + 21);
+      doc.text('CEP: 20000-000', margin + colWidth + 3, y + 25);
+      doc.text('Inscrição Estadual: 123.456.789.012', margin + colWidth + 3, y + 29);
+      doc.text('Email: cliente@exemplo.com', margin + colWidth + 3, y + 33);
+
+      y += 42;
+
+      // ===== DETALHES DA NOTA =====
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(margin, y, pageWidth - 2 * margin, 16, 'D');
+      doc.setFontSize(6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      const dataEmissao = new Date();
+      doc.text(`Data de Emissão: ${dataEmissao.toLocaleDateString('pt-BR')}`, margin + 3, y + 5);
+      doc.text(`Hora: ${dataEmissao.toLocaleTimeString('pt-BR')}`, margin + 3, y + 10);
+      doc.text(`Forma de Emissão: Normal`, margin + 50, y + 5);
+      doc.text(`Finalidade: NFe normal`, margin + 50, y + 10);
+      doc.text(`Consumidor Final: Sim`, margin + 95, y + 5);
+      doc.text(`Presença do Cliente: 01 - Presencial`, margin + 95, y + 10);
+
+      y += 18;
+
+      // ===== TABELA DE PRODUTOS =====
+      const tableTop = y;
+      const tableWidth = pageWidth - 2 * margin;
+      const rowHeight = 8;
 
       // Cabeçalho da tabela
-      y += 8;
-      doc.setFontSize(9);
-      doc.setFillColor(52, 52, 52);
-      doc.setTextColor(255, 255, 255);
-
-      doc.setDrawColor(79, 140, 255);
+      doc.setFillColor(200, 200, 200);
+      doc.rect(margin, tableTop, tableWidth, rowHeight, 'F');
+      doc.setDrawColor(0, 0, 0);
       doc.setLineWidth(0.3);
-      doc.rect(margin, y, tableWidth, 10, 'D');
+      doc.rect(margin, tableTop, tableWidth, rowHeight, 'D');
 
-      doc.setFontSize(9);
-      doc.text('Produto', margin + 5, y + 7);
-      doc.text('Qtd', margin + col1Width + 5, y + 7);
-      doc.text('Valor Unit.', margin + col1Width + col2Width + 5, y + 7);
+      doc.setFontSize(6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Item', margin + 2, tableTop + 5);
+      doc.text('Código', margin + 10, tableTop + 5);
+      doc.text('Descrição', margin + 30, tableTop + 5);
+      doc.text('Qtd', margin + 110, tableTop + 5);
+      doc.text('Un', margin + 125, tableTop + 5);
+      doc.text('Valor Unit', margin + 135, tableTop + 5);
+      doc.text('Valor Total', margin + 165, tableTop + 5);
 
-      y += 14;
+      y = tableTop + rowHeight;
 
       // Linhas dos itens
-      doc.setTextColor(0, 0, 0);
+      let totalGeral = 0;
       this.itens.forEach((item, index) => {
         const produto = this.produtos.find((p) => p.id === item.produto_id);
-        const nomeProd = produto ? `${produto.codigo} - ${produto.descricao}` : 'Produto';
-        const qtd = item.quantidade.toString();
-        const valorUnit = produto ? `R$ ${(Math.random() * 100).toFixed(2).replace('.', ',')}` : 'R$ --,--';
+        const codigo = produto ? produto.codigo : '-';
+        const descricao = produto ? produto.descricao : 'Produto';
+        const qtd = item.quantidade;
+        const valorUnit = Math.random() * 100 + 10;
+        const valorTotal = qtd * valorUnit;
+        totalGeral += valorTotal;
 
+        // Alternar cor de fundo
         if (index % 2 === 0) {
           doc.setFillColor(245, 245, 245);
-          doc.rect(margin, y, tableWidth, 8, 'F');
+          doc.rect(margin, y, tableWidth, rowHeight, 'F');
         }
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.2);
+        doc.rect(margin, y, tableWidth, rowHeight, 'D');
 
-        doc.text(nomeProd, margin + 5, y + 5);
-        doc.text(qtd, margin + col1Width + 5, y + 5);
-        doc.text(valorUnit, margin + col1Width + col2Width + 5, y + 5);
+        doc.setFontSize(6);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        doc.text((index + 1).toString(), margin + 2, y + 5);
+        doc.text(codigo, margin + 10, y + 5);
+        doc.text(descricao, margin + 30, y + 5);
+        doc.text(qtd.toString(), margin + 110, y + 5);
+        doc.text('un', margin + 125, y + 5);
+        doc.text(`R$ ${valorUnit.toFixed(2).replace('.', ',')}`, margin + 135, y + 5);
+        doc.text(`R$ ${valorTotal.toFixed(2).replace('.', ',')}`, margin + 165, y + 5);
 
-        y += 12;
+        y += rowHeight;
       });
 
-      // Total
-      y += 8;
-      doc.setFontSize(11);
-      doc.setDrawColor(79, 140, 255);
-      doc.setLineWidth(0.5);
-      doc.rect(margin, y, tableWidth, 10, 'D');
-      y += 14;
-      const total = ((Math.random() * 500) + 50).toFixed(2).replace('.', ',');
-      doc.text(`Total: R$ ${total}`, margin + 5, y);
+      // ===== TOTAIS =====
+      y += 2;
+      const totalWidth = pageWidth - 2 * margin;
+      const totalCol1 = totalWidth * 0.55;
+      const totalCol2 = totalWidth * 0.2;
+      const totalCol3 = totalWidth * 0.25;
 
-      // Rodapé
-      y += 25;
-      doc.setFontSize(8);
-      doc.setTextColor(100, 100, 100);
-      doc.text(`Gerado em ${new Date().toLocaleString()} | Sistema de Emissão de Notas Fiscais`, pageWidth / 2, y, { align: 'center' });
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(margin, y, totalCol1, 6, 'D');
+      doc.rect(margin + totalCol1, y, totalCol2, 6, 'D');
+      doc.rect(margin + totalCol1 + totalCol2, y, totalCol3, 6, 'D');
+
+      doc.setFontSize(6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Base de Cálculo do ICMS', margin + 2, y + 4);
+      doc.text('Alíquota ICMS', margin + totalCol1 + 2, y + 4);
+      doc.text('R$ 0,00', margin + totalCol1 + totalCol2 + 2, y + 4);
+
+      y += 6;
+      doc.rect(margin, y, totalCol1, 6, 'D');
+      doc.rect(margin + totalCol1, y, totalCol2, 6, 'D');
+      doc.rect(margin + totalCol1 + totalCol2, y, totalCol3, 6, 'D');
+      doc.text('Valor do ICMS', margin + 2, y + 4);
+      doc.text('Alíquota IPI', margin + totalCol1 + 2, y + 4);
+      doc.text('R$ 0,00', margin + totalCol1 + totalCol2 + 2, y + 4);
+
+      y += 6;
+      doc.rect(margin, y, totalCol1, 6, 'D');
+      doc.rect(margin + totalCol1, y, totalCol2, 6, 'D');
+      doc.rect(margin + totalCol1 + totalCol2, y, totalCol3, 6, 'D');
+      doc.text('Valor do IPI', margin + 2, y + 4);
+      doc.text('Alíquota PIS', margin + totalCol1 + 2, y + 4);
+      doc.text('R$ 0,00', margin + totalCol1 + totalCol2 + 2, y + 4);
+
+      y += 6;
+      doc.rect(margin, y, totalCol1, 6, 'D');
+      doc.rect(margin + totalCol1, y, totalCol2, 6, 'D');
+      doc.rect(margin + totalCol1 + totalCol2, y, totalCol3, 6, 'D');
+      doc.text('Valor do PIS', margin + 2, y + 4);
+      doc.text('Alíquota COFINS', margin + totalCol1 + 2, y + 4);
+      doc.text('R$ 0,00', margin + totalCol1 + totalCol2 + 2, y + 4);
+
+      y += 6;
+      doc.rect(margin, y, totalCol1, 6, 'D');
+      doc.rect(margin + totalCol1, y, totalCol2, 6, 'D');
+      doc.rect(margin + totalCol1 + totalCol2, y, totalCol3, 6, 'D');
+      doc.text('Valor do COFINS', margin + 2, y + 4);
+      doc.setFont('helvetica', 'bold');
+      doc.text('VALOR TOTAL', margin + totalCol1 + 2, y + 4);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`R$ ${totalGeral.toFixed(2).replace('.', ',')}`, margin + totalCol1 + totalCol2 + 2, y + 4);
+
+      y += 8;
+
+      // ===== IMPOSTOS =====
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(margin, y, tableWidth, 20, 'D');
+      doc.setFontSize(6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text('IMPOSTOS', margin + 3, y + 4);
+      doc.setFont('helvetica', 'normal');
+      doc.text('ICMS: R$ 0,00', margin + 3, y + 9);
+      doc.text('IPI: R$ 0,00', margin + 3, y + 14);
+      doc.text('PIS: R$ 0,00', margin + 50, y + 9);
+      doc.text('COFINS: R$ 0,00', margin + 50, y + 14);
+      doc.text('Total de Impostos: R$ 0,00', margin + 95, y + 9);
+      doc.text('Valor Aproximado de Tributos: R$ 0,00', margin + 95, y + 14);
+
+      y += 22;
+
+      // ===== INFORMAÇÕES ADICIONAIS =====
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(margin, y, tableWidth, 16, 'D');
+      doc.setFontSize(6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text('INFORMAÇÕES ADICIONAIS', margin + 3, y + 4);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Chave de Acesso: 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000', margin + 3, y + 9);
+      doc.text('Consulta: www.gov.br/nfce - Via Eletrônica', margin + 3, y + 13);
+
+      y += 18;
+
+      // ===== RODAPÉ =====
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(margin, y, tableWidth, 10, 'D');
+      doc.setFontSize(6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Emitido em: ${new Date().toLocaleString('pt-BR')}`, margin + 3, y + 4);
+      doc.text('Sistema de Emissão de Notas Fiscais', pageWidth / 2, y + 4, { align: 'center' });
+      doc.text('Página 1/1', pageWidth - margin - 10, y + 4, { align: 'right' });
 
       doc.save(`Nota_Fiscal_${new Date().toISOString().split('T')[0]}.pdf`);
 

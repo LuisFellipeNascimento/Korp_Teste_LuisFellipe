@@ -5,36 +5,96 @@
   color: #e5eefb;
 }
 
-.nota-fiscal-page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 40px 20px 80px;
+.home-page {
+  min-height: 100%;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
 }
 
-.header-row,
-.section-title-row,
-.actions-row,
-.save-row,
-.nota-actions {
+.hero-section {
+  background: linear-gradient(135deg, #3b82f6, #7c3aed);
+  padding: 64px 20px;
+  text-align: center;
+}
+
+.hero-content h1 {
+  margin: 0 0 12px 0;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: white;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.hero-content p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 56px 20px 80px;
+}
+
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-header h2 {
+  margin: 0 0 8px 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: #f3f7ff;
+}
+
+.section-header p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.actions-group {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
-.eyebrow {
-  margin: 0 0 8px;
-  color: #93c5fd;
-  font-size: 0.8rem;
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #4f8cff, #7c3aed);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-decoration: none;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 16px rgba(79, 140, 255, 0.28);
 }
 
-h2,
-h3 {
-  margin: 0;
-  color: #f3f7ff;
+.btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(79, 140, 255, 0.4);
+}
+
+.error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  color: #fca5a5;
+  margin-bottom: 24px;
+  font-weight: 600;
 }
 
 .card {
@@ -124,6 +184,15 @@ button:disabled {
   transform: none;
 }
 
+.actions-row,
+.save-row,
+.nota-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .itens-table {
   width: 100%;
   border-collapse: collapse;
@@ -144,6 +213,11 @@ button:disabled {
   text-transform: uppercase;
 }
 
+.itens-table td {
+  color: #edf4ff;
+  font-size: 0.96rem;
+}
+
 .erro {
   margin: 12px 0 0;
   color: #fca5a5;
@@ -157,8 +231,33 @@ button:disabled {
 }
 
 .empty-state {
-  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  padding: 48px 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 20px;
   color: #94a3b8;
+  margin-top: 20px;
+}
+
+.empty-state svg {
+  color: #64748b;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 1.3rem;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .nota-list {
@@ -214,17 +313,39 @@ button:disabled {
 }
 
 @media (max-width: 768px) {
-  .header-row,
-  .section-title-row,
-  .save-row,
-  .nota-actions,
-  .actions-row {
+  .hero-section {
+    padding: 40px 20px;
+  }
+
+  .container {
+    padding: 32px 20px 60px;
+  }
+
+  .section-header {
     flex-direction: column;
     align-items: stretch;
   }
 
+  .actions-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .actions-row,
+  .save-row,
+  .nota-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .primary-btn,

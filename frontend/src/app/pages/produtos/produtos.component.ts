@@ -1,13 +1,14 @@
 import { Component, afterNextRender, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ProdutoService } from '../../services/produto.service';
 import { Produto } from '../../models/models';
 
 @Component({
   selector: 'app-produtos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './produtos.html',
   styleUrl: './produtos.css',
 })
