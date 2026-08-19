@@ -1,4 +1,4 @@
-🚀 Projeto Fullstack Angular + Go
+🚀 Projeto para a criação de Produtos e Notas Fiscais + Go/Angular
 Este repositório contém um sistema completo com frontend em Angular e backend em Go.
 O objetivo é fornecer um guia simples e direto para configurar e rodar o projeto localmente.
 
